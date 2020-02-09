@@ -1,9 +1,8 @@
-import {ON_CHANGE} from "../actions/actions";
+import {ON_CHANGE, POST_TO_DECODE, POST_TO_ENCODE} from "../actions/actions";
 
 const initialState = {
     encoded: '',
     decoded: '',
-    password: ''
 };
 
 const  codingReducer = (state = initialState, action) => {
@@ -13,6 +12,16 @@ const  codingReducer = (state = initialState, action) => {
                 ...state,
                 [action.name]: action.value
             };
+        case POST_TO_ENCODE:
+            return {
+                ...state,
+                decoded: action.postData
+            };
+        case POST_TO_DECODE:
+                return {
+                    ...state,
+                    encoded: action.postData
+                };
         default:
             return state;
     }

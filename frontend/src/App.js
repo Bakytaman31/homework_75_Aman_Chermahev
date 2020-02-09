@@ -3,41 +3,47 @@ import {onChange, postToDecode, postToEncode} from "./store/actions/codingAction
 import {connect} from "react-redux";
 
 class App extends Component {
+    state = {
+        encoded: '',
+        password: '',
+        decoded: ''
+    };
 
     onChange = event => {
-        this.props.onChange(event.target.name, event.target.value);
+        this.setState({[event.target.name]: event.target.value})
     };
 
-    postToEncode = () => {
-        const postData = {password: this.props.password, text: this.props.encoded};
-        this.props.postToEncode(postData);
+    postEncode = async () => {
+        const postData = {password: this.state.password, encoded: this.state.encoded};
+        await this.props.postToEncode(postData);
+        this.setState({decoded: this.props.decoded});
     };
 
-    postToDecode = () => {
-        const postData = {password: this.props.password, text: this.props.decoded};
-        this.props.postToDecode(postData);
+    postDecode = async () => {
+        const postData = {password: this.state.password, decoded: this.state.decoded};
+        await this.props.postToDecode(postData);
+        this.setState({encoded: this.props.encoded});
     };
 
     render() {
         return (
             <div className="App">
-                <form>
                     <textarea cols="30"
                               rows="10"
-                              value={this.props.encoded}
+                              value={this.state.encoded}
                               name="encoded"
                               onChange={this.onChange}
                               placeholder="Encoded"/>
-                    <button onClick={this.postToDecode}>Decode</button>
-                    <input type="text" name="password" onChange={this.onChange} value={this.props.password}/>
-                    <button onClick={postToEncode}>Encode</button>
+
+                <button onClick={this.postDecode}>Decode</button>
+                    <input type="text" name="password" onChange={this.onChange} value={this.state.password}/>
+                <button onClick={this.postEncode}>Encode</button>
                     <textarea cols="30"
                               rows="10"
-                              value={this.props.decoded}
+                              value={this.state.decoded}
                               name="decoded"
                               onChange={this.onChange}
                               placeholder="Decoded"/>
-                </form>
             </div>
         );
     }
@@ -45,8 +51,7 @@ class App extends Component {
 
 const mapStateToProps = state => ({
     encoded: state.encoded,
-    decoded: state.decoded,
-    password: state.password
+    decoded: state.decoded
 });
 
 const mapDispatchToProps = dispatch => ({
